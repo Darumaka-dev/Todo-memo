@@ -1,9 +1,4 @@
-import {
-  memo,
-  useCallback,
-  type SetStateAction,
-  type Dispatch,
-} from "react";
+import { memo, useEffect } from "react";
 import Button from "@mui/material/Button";
 
 interface Todo {
@@ -13,14 +8,12 @@ interface Todo {
 
 interface TodoItemProps {
   item: Todo;
-  todos: Todo[];
-  setTodos: Dispatch<SetStateAction<Todo[]>>;
+  onDelete: (id: string) => void;
 }
-
-export const TodoItem = memo(({ item, todos, setTodos }: TodoItemProps) => {
-  const deleteTask = useCallback((id: string) => {
-    setTodos((prev) => prev.filter((item) => item.id !== id));
-  }, []);
+export const TodoItem = memo(({ item, onDelete }: TodoItemProps) => {
+  useEffect(() => {
+    console.log("Rerender");
+  });
 
   return (
     <>
@@ -29,7 +22,7 @@ export const TodoItem = memo(({ item, todos, setTodos }: TodoItemProps) => {
         color="error"
         sx={{ ml: 2, fontSize: 10 }}
         variant="outlined"
-        onClick={() => deleteTask(item.id)}
+        onClick={() => onDelete(item.id)}
       >
         delete
       </Button>

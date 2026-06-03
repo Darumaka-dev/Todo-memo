@@ -1,5 +1,4 @@
 import {
-  memo,
   useCallback,
   type ChangeEvent,
   type SetStateAction,
@@ -8,29 +7,24 @@ import {
 import TextField from "@mui/material/TextField";
 
 interface TodoItemProps {
-  inputValue: string;
-  setInputValue: Dispatch<SetStateAction<string>>;
+  searchValue: string;
+  setSearchValue: Dispatch<SetStateAction<string>>;
 }
-export const SearchInput = memo(
-  ({ inputValue, setInputValue }: TodoItemProps) => {
-    const updateInputValue = useCallback(
-      (e: ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setInputValue(value);
-      },
-      []
-    );
+export const SearchInput = ({ searchValue, setSearchValue }: TodoItemProps) => {
+  const updateInputValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value);
+  }, []);
 
-    return (
-      <>
-        <TextField
-          id="outlined-basic"
-          label="Search Task"
-          variant="outlined"
-          onChange={updateInputValue}
-          value={inputValue}
-        />
-      </>
-    );
-  }
-);
+  return (
+    <>
+      <TextField
+        id="outlined-basic"
+        label="Search Task"
+        variant="outlined"
+        onChange={updateInputValue}
+        value={searchValue}
+      />
+    </>
+  );
+};
