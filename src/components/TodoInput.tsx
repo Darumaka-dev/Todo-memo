@@ -8,23 +8,22 @@ interface TodoItemProps {
 }
 
 export const TodoInput = ({ onAdd }: TodoItemProps) => {
-  const [inputValue, setInputValue] = useState("");
+  const [value, setValue] = useState("");
 
-  const updateInput = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const data = e.target.value;
-    setInputValue(data);
+    setValue(data);
   };
 
   return (
-    <Stack spacing={2} direction="row" sx={{ marginBottom: "20px" }}>
+    <Stack spacing={2} direction="row" sx={{ mb: 3 }}>
       <TextField
-        id="outlined-basic"
+        value={value}
+        onChange={handleChange}
         label="Task name"
         variant="outlined"
-        onChange={updateInput}
-        value={inputValue}
       />
-      <Button variant="contained" onClick={() => onAdd(inputValue)}>
+      <Button variant="contained" onClick={() => onAdd(value)}>
         Add
       </Button>
     </Stack>
