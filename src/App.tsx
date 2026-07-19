@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, type ChangeEvent } from "react";
 import { TodoInput } from "./components/TodoInput";
 import { SearchInput } from "./components/SearchInput";
 import { TodoList } from "./components/TodoList";
@@ -18,33 +18,37 @@ function generateTodos() {
 function App() {
   const [searchValue, setSearchValue] = useState("");
   const [todos, setTodos] = useState<Todo[]>(() => {
-    // const data = localStorage.getItem("todos");
-    // return data ? JSON.parse(data) : [];
-    return generateTodos();
+    const data = localStorage.getItem("todos");
+    return data ? JSON.parse(data) : generateTodos();
   });
 
-  const deleteTask = useCallback((id: string) => {
-    setTodos((prev) => prev.filter((item) => item.id !== id));
-  }, []);
-
-  const handleClickAdd = (text) => {
+  const handleAddTask = (text: string) => {
     setTodos((prev) => [...prev, { id: Date.now().toString(), text }]);
     setSearchValue("");
   };
+  
+  const handleDeleteTask = useCallback((id: string) => {
+    setTodos((prev) => prev.filter((item) => item.id !== id));
+  }, []);
+
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  }
+
+  const filteredTodos: Todo[] = useMemo(
+    () => todos.filter((todo) => todo.text.includes(searchValue)),
+    [searchValue, todos]
+  );
 
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
   }, [todos]);
 
-  const filtered: Todo[] = useMemo(
-    () => todos.filter((todo) => todo.text.includes(searchValue)),
-    [searchValue, todos]
-  );
   return (
     <>
-      <TodoInput onAdd={handleClickAdd} />
-      <SearchInput searchValue={searchValue} setSearchValue={setSearchValue} />
-      <TodoList todos={filtered} onDelete={deleteTask}></TodoList>
+      <TodoInput onAdd={handleAddTask} />
+      <SearchInput value={searchValue} onChange={handleSearchChange} />
+      <TodoList todos={filteredTodos} onDelete={handleDeleteTask}></TodoList>
     </>
   );
 }
